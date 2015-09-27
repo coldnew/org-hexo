@@ -50,6 +50,8 @@
     (:permalink "PERMALINK"  nil     nil)
     ;; TODO:
     (:status   "STATUS"     nil     nil)
+    ;; enable htmlize syntax highlight
+    (:htmlize   "HTMLIZE"    nil     nil)
     ))
 
 

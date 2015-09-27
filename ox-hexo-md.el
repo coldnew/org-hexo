@@ -50,6 +50,7 @@
     (link . org-hexo-md-link)
     ;; Make compatible with pelican
     (src-block . org-hexo-md-src-block)
+    (example-block . org-hexo-md-example-block)
     ;; Fix toc for blogit theme
     (inner-template . org-hexo-md-inner-template)
     (table . org-hexo-md-table)
@@ -112,21 +113,48 @@ contextual information."
 
 ;;;; Example Block and Src Block
 
+;;;; Example Block
+
+(defun org-hexo-md-example-block (example-block contents info)
+  "Transcode EXAMPLE-BLOCK element into Markdown format.
+CONTENTS is nil.  INFO is a plist used as a communication
+channel."
+  (let ((htmlize (plist-get info :htmlize)))
+    (if ;;(or (s-equals-p htmlize "nil") (s-equals-p htmlize "false"))
+        nil
+        (replace-regexp-in-string
+         "^" "    "
+         (org-remove-indentation
+          (org-export-format-code-default example-block info)))
+      (org-html-example-block example-block contents info)
+      )
+    ))
+
 ;;;; Src Block
 
 (defun org-hexo-md-src-block (src-block contents info)
   "Transcode a SRC-BLOCK element from Org to HTML.
 CONTENTS holds the contents of the item.  INFO is a plist holding
 contextual information."
-  (let ((lang (org-element-property :language src-block)))
-    ;;    (format "    :::%s\n%s\n"
-    (concat
-     (format "{%% codeblock lang:%s %%}" lang)
-     "\n"
-     (format "%s"
-             (org-md-example-block src-block contents info))
-     (format "{%% endcodeblock %%}")
-     )))
+  (let ((lang (org-element-property :language src-block))
+        (htmlize (plist-get info :htmlize)))
+
+    (if ;;(or (s-equals-p htmlize "nil") (s-equals-p htmlize "false"))
+        nil
+        (concat
+         (format "{%% codeblock lang:%s %%}" lang)
+         "\n"
+         (format "%s"
+                 (org-md-example-block src-block contents info))
+         (format "{%% endcodeblock %%}"))
+
+      (replace-regexp-in-string
+       "</pre>\n</div>" "</pre></div>"
+       (replace-regexp-in-string
+        "<div class=\"org-src-container\">\n\n<pre" "<div class=\"org-src-container\"><pre"
+        (format "%s"
+                (org-html-src-block src-block contents info))))
+      )))
 
 
 ;;;; Template

@@ -51,6 +51,9 @@
     ;; Make compatible with pelican
     (src-block . org-hexo-md-src-block)
     (example-block . org-hexo-md-example-block)
+    (quote-block . org-hexo-md-quote-block)
+    ;; Increase headline level
+    (headline . org-hexo-md-headline)
     ;; Fix toc for blogit theme
     (inner-template . org-hexo-md-inner-template)
     (table . org-hexo-md-table)
@@ -111,6 +114,16 @@ contextual information."
                             (org-html-table table contents info)))
 
 
+;;;; Headline
+
+(defun org-hexo-md-headline (headline contents info)
+  "Transcode HEADLINE element into Markdown format.
+CONTENTS is the headline contents.  INFO is a plist used as
+a communication channel."
+  (let* ((info (plist-put info :headline-offset 1)))
+    (org-md-headline headline contents info)))
+
+
 ;;;; Example Block and Src Block
 
 ;;;; Example Block
@@ -155,6 +168,15 @@ contextual information."
         (format "%s"
                 (org-html-src-block src-block contents info))))
       )))
+
+
+;;;; Quote Block
+
+(defun org-hexo-md-quote-block (quote-block contents info)
+  "Transcode a QUOTE-BLOCK element from Org to HTML.
+CONTENTS holds the contents of the block.  INFO is a plist
+holding contextual information."
+  (format "{% centerquote %}%s{% endcenterquote %}" contents))
 
 
 ;;;; Template

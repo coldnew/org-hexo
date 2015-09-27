@@ -1,0 +1,199 @@
+;;; ox-hexo-md.el --- Export org-mode to hexo markdown.
+
+;; Copyright (c) 2015 Yen-Chin, Lee. (coldnew) <coldnew.tw@gmail.com>
+;;
+;; Author: coldnew <coldnew.tw@gmail.com>
+;; Keywords:
+;; X-URL: http://github.com/coldnew/org-hexo
+;; Version: 0.1
+;; Package-Requires: ((org "8.0") (cl-lib "0.5") (f "0.17.2") (noflet "0.0.11"))
+
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+;;; Commentary:
+
+;;; Code:
+
+(eval-when-compile (require 'cl-lib))
+
+(require 'f)
+(require 'ox-md)
+(require 'ox-publish)
+
+(require 'ox-hexo-core)
+
+
+;;;; Backend
+
+(org-export-define-derived-backend 'hexo-md 'md
+  :translate-alist
+  '(
+    ;; Fix for multibyte language
+    (paragraph . org-hexo-md-paragraph)
+    ;; Fix for pelican metadata
+    (template . org-hexo-md-template)
+    ;; Fix link path to suite for pelican
+    (link . org-hexo-md-link)
+    ;; Make compatible with pelican
+    (src-block . org-hexo-md-src-block)
+    ;; Fix toc for blogit theme
+    (inner-template . org-hexo-md-inner-template)
+    (table . org-hexo-md-table)
+    )
+  :options-alist org-hexo--options-alist)
+
+
+;;;; Paragraph
+
+(defun org-hexo-md-paragraph (paragraph contents info)
+  "Transcode PARAGRAPH element into Markdown format.
+CONTENTS is the paragraph contents.  INFO is a plist used as
+a communication channel."
+  ;; Send modify data to org-md-paragraph
+  (org-hexo--paragraph 'org-md-paragraph paragraph contents info))
+
+
+;;; Template
+
+(defun org-hexo-md-inner-template (contents info)
+  "Return body of document string after HTML conversion.
+CONTENTS is the transcoded contents string.  INFO is a plist
+holding export options."
+  (concat
+   ;; Table of contents.
+   ;; (let ((depth (plist-get info :with-toc)))
+   ;;   (when depth (org-hexo-html-toc depth info)))
+
+   ;; Document contents.
+   contents
+   ;; Footnotes section.
+   (org-html-footnote-section info)))
+
+
+;;;; Link
+
+(defun org-hexo-md-link (link contents info)
+  "Transcode LINE-BREAK object into Markdown format.
+CONTENTS is the link's description.  INFO is a plist used as
+a communication channel."
+  (let ((org-md-link-org-files-as-md nil)
+        (md-link (org-hexo--link 'org-md-link link contents info)))
+    ;; Fancybox support
+    ;; convert:
+    ;;    ![img]({filename}data/test.png)   ->  ![img]({filename}data/test.png){.fancybox}
+    ;; (replace-regexp-in-string
+    ;;  "!\\[img\\](\\(.*?\\))" "![img](\\1){.fancybox}" md-link)
+    md-link))
+
+
+(defun org-hexo-md-table (table contents info)
+  "Transcode a TABLE element from Org to HTML.
+CONTENTS is the contents of the table.  INFO is a plist holding
+contextual information."
+  ;; remove newline
+  ;; NOTE: https://github.com/iissnan/hexo-theme-next/issues/114
+  (replace-regexp-in-string "\n" ""
+                            (org-html-table table contents info)))
+
+
+;;;; Example Block and Src Block
+
+;;;; Src Block
+
+(defun org-hexo-md-src-block (src-block contents info)
+  "Transcode a SRC-BLOCK element from Org to HTML.
+CONTENTS holds the contents of the item.  INFO is a plist holding
+contextual information."
+  (let ((lang (org-element-property :language src-block)))
+    ;;    (format "    :::%s\n%s\n"
+    (concat
+     (format "{%% codeblock lang:%s %%}" lang)
+     "\n"
+     (format "%s"
+             (org-md-example-block src-block contents info))
+     (format "{%% endcodeblock %%}")
+     )))
+
+
+;;;; Template
+
+(defun org-hexo-md---build-meta-info (name var func)
+  (and (org-string-nw-p var)
+       (format "%s: %s\n" name
+               (concat
+                (if (s-equals-p name "tags") "[ " "")
+                (funcall func var)
+                (if (s-equals-p name "tags") " ]" "")))
+       ))
+
+(defun org-hexo-md--build-meta-info (info)
+  "Return meta tags for exported document.
+INFO is a plist used as a communication channel."
+  (org-hexo--build-meta-info
+   info
+   ;; title format
+   "title: %s"
+   ;; method to build generic metainfo
+   '(lambda (name var)
+      (org-hexo-md---build-meta-info name var 'org-hexo--protect-string))
+   ;; method to build compact metainfo
+   '(lambda (name var)
+      (org-hexo-md---build-meta-info name var 'org-hexo--protect-string*))
+   ;; method to build toc
+   '(lambda (depth info)
+      (org-pelican-html-toc depth info)
+      )))
+
+(defun org-hexo-md-template (contents info)
+  "Return complete document string after Markdown conversion.
+CONTENTS is the transcoded contents string.  INFO is a plist used
+as a communication channel."
+  (concat
+   (org-hexo-md--build-meta-info info)
+   "\n"
+   contents))
+
+
+;;; End-user functions
+
+;;;###autoload
+(defun org-hexo-export-as-md
+    (&optional async subtreep visible-only body-only ext-plist)
+  "Export current buffer to an HTML buffer for blogit.
+
+Export is done in a buffer named \"*Blogit HTML Export*\", which
+will be displayed when `org-export-show-temporary-export-buffer'
+is non-nil."
+  (interactive)
+  (org-export-to-buffer 'hexo-md "*hexo markdown Export*"
+    async subtreep visible-only body-only ext-plist
+    (lambda () (markdown-mode))))
+
+;;;###autoload
+(defun org-hexo-publish-to-md (plist filename pub-dir)
+  "Publish an org file to rst.
+
+FILENAME is the filename of the Org file to be published.  PLIST
+is the property list for the given project.  PUB-DIR is the
+publishing directory.
+
+Return output file name."
+  (org-publish-org-to 'hexo-md filename ".md"
+                      plist pub-dir))
+
+(provide 'ox-hexo-md)
+;;; ox-hexo-md.el ends here.

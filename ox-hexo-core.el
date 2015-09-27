@@ -80,6 +80,28 @@
   (org-hexo--protect-tag
    (org-hexo--protect-string str)))
 
+(defun org-hexo--do-copy (src dst &optional copyf args)
+  "Copy SRC into DST. If `dired-do-sync' is found it would be
+preferred. Otherwise, `copy-directory' or `copy-files' would be
+used.
+
+A copy function COPYF and its arguments ARGS could be specified."
+  (let* ((dirp (file-directory-p src))
+         (dst-dir (file-name-directory dst))
+         (copyf (cond
+                 (copyf copyf)
+                 ((functionp 'dired-do-sync) 'dired-do-sync)
+                 (dirp 'copy-directory)
+                 (t 'copy-file)))
+         (args (or args
+                   (when (eq 'copy-file copyf) '(t t t)))))
+
+    (unless (or (not dst-dir) (file-exists-p dst-dir)) (make-directory dst-dir t))
+
+    (when (file-exists-p src)
+      (apply copyf src dst args))))
+
+
 
 ;;;; Paragraph
 
@@ -114,7 +136,10 @@ a communication channel."
   (let* ((type (org-element-property :type link))
          (raw-link (org-element-property :path link))
          (raw-path (expand-file-name raw-link))
-         (hexo-link (funcall func link contents info)))
+         (hexo-link (funcall func link contents info))
+         (permalink (plist-get info :permalink))
+         (output-file (plist-get info :output-file))
+         (data-dir (f-join (file-name-sans-extension output-file) "data")))
 
     ;; file
     (when (string= type "file")
@@ -125,9 +150,21 @@ a communication channel."
                                    (file-name-directory (buffer-file-name (current-buffer)))))
         (setq hexo-link (s-replace (concat "file://" raw-path) raw-link hexo-link)))
 
-      ;; convert relative path from `data/xxx.png' to `{filename}data/xxx.png'
+      ;; convert relative path from `data/xxx.png' to `/data/xxx.png'
       (setq hexo-link (s-replace raw-link
-                                    (concat "{filename}" raw-link) hexo-link)))
+                                       (concat "/" raw-link) hexo-link))
+
+      ;; Copy file to output file dir
+;;      (message (format "---> file: %s" raw-path))
+
+      ;; Create directory to save file
+;;      (make-directory data-dir t)
+
+      ;; Copy file to data dir
+;;      (message (format "Copy files %s to %s." raw-path data-dir))
+;;      (org-hexo--do-copy raw-path  (f-slash data-dir))
+      )
+
     hexo-link))
 
 
@@ -221,11 +258,24 @@ INFO is a plist used as a communication channel.
      ;; (let ((depth (plist-get info :with-toc)))
      ;;   (when depth
      ;;     (funcall metainfo "toc" (funcall toc depth info))))
-    ;; end of yaml
+     ;; end of yaml
      "\n---\n"
      ;; Add generator comments
      "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n"
-    )))
+     )
+    ))
+
+;; buffer   (plist-get info :input-buffer)
+;; filename (plist-get info :input-file)
+;; output-file (plist-get info :output-file)
+
+;; (:export-options
+;;  nil
+;;  :input-buffer "編譯 wandboard 的 Android 4.4.2 系統.org<tmp>"
+;;  :input-file "/Users/coldnew/Workspace/hexo-blogs/tmp/blog/編譯 wandboard 的 Android 4.4.2 系統.org"
+;;  :layout nil
+;;  :date "2015-09-07 23:28:44")
+;; -
 
 (provide 'ox-hexo-core)
 ;;; ox-hexo-core.el ends here.

@@ -55,7 +55,6 @@
 ;; ox-pelican-core.el -- core or common use functions
 ;; ox-pelican-html.el -- HTML exporter
 ;; ox-pelican-md.el   -- Markdown exporter
-;; ox-pelican-rst.el  -- Rst exporter (not done yet)
 ;;
 (mapcar (lambda (x) (require (intern (format "ox-hexo-%s" x)) nil t))
         '("core" "html" "md"))
@@ -81,14 +80,6 @@ If #+STATUS: tag not exist, set current status as `draft'."
                      (format-time-string org-hexo-date-format)))
 
 
-;; TODO: add minor mode for syntax highlight
-;; TODO: also copy images for blogit-user
-;; TODO: export file according to url (also make dir)
-;; TODO: check markdown syntax formate
-
-;; TODO: shipping image with {attatch} so we can put image with .org file in the same dir
-;;
-;; ref: https://github.com/getpelican/pelican/commit/d503ea436c1733c2fc596e5003bac2cb74d576c9
 
 (provide 'org-hexo)
 ;;; org-hexo.el ends here.

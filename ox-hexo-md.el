@@ -101,8 +101,12 @@ a communication channel."
     ;;    ![img]({filename}data/test.png)   ->  ![img]({filename}data/test.png){.fancybox}
     ;; (replace-regexp-in-string
     ;;  "!\\[img\\](\\(.*?\\))" "![img](\\1){.fancybox}" md-link)
-    md-link))
 
+    ;; convert:
+    ;;    ![img](data/test.png)   -> ![](data/test.png)
+    (replace-regexp-in-string
+     "!\\[img\\](\\(.*?\\))" "![](\\1)" md-link)
+    ))
 
 (defun org-hexo-md-table (table contents info)
   "Transcode a TABLE element from Org to HTML.

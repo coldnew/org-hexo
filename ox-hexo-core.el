@@ -38,7 +38,7 @@
 
 ;;;; Backend general
 
-;; pelican metadata
+;; hexo metadata
 (defvar org-hexo--options-alist
   '(
     (:layout    "LAYOUT"     nil     nil)
@@ -138,9 +138,7 @@ a communication channel."
          (raw-path (expand-file-name raw-link))
          (hexo-link (funcall func link contents info))
          (permalink (plist-get info :permalink))
-         (output-file (plist-get info :output-file))
-         ;; FIXME: make user control the data dir name
-         (asset-dir (f-join (file-name-sans-extension output-file) "data")))
+         (output-file (plist-get info :output-file)))
 
     ;; file
     (when (string= type "file")
@@ -153,16 +151,20 @@ a communication channel."
 
         (setq hexo-link (s-replace (concat "file://" raw-path) raw-link hexo-link)))
 
-      ;; Create hexo's asset directory to save file
-      (make-directory asset-dir t)
+      (when output-file
+        (let ;; FIXME: make user control the data dir name
+            ((asset-dir (f-join (file-name-sans-extension output-file) "data")))
+          ;; Create hexo's asset directory to save file
+          (make-directory asset-dir t)
 
-      ;; Copy file to asset dir
-      (message (format "Copy files %s to %s." raw-path asset-dir))
-      (org-hexo--do-copy raw-path  (f-slash asset-dir))
+          ;; Copy file to asset dir
+          (message (format "Copy files %s to %s." raw-path asset-dir))
+          (org-hexo--do-copy raw-path  (f-slash asset-dir))
 
-      ;; change link to use asset dir
-      (setq hexo-link (s-replace raw-link
-                                 (f-join "data" (file-name-nondirectory raw-path)) hexo-link)))
+          ;; change link to use asset dir
+          (setq hexo-link (s-replace raw-link
+                                     (f-join "data" (file-name-nondirectory raw-path)) hexo-link)))))
+
     hexo-link))
 
 
@@ -222,17 +224,17 @@ a communication channel."
   "Return meta tags for exported document.
 INFO is a plist used as a communication channel.
 "
-  (let ((author (org-hexo--parse-author info))
-        (title (org-hexo--parse-title info))
-        (date (org-hexo--parse-date info :date))
-        (updated (org-hexo--parse-date info :updated))
-        (description (plist-get info :description))
-        (keywords (plist-get info :keywords))
-        (category (plist-get info :category))
-        (tags (plist-get info :tags))
-        (permalink (plist-get info :permalink))
-        (lang (plist-get info :language))
-        (status (plist-get info :status))) ;; NOTE: value: draft, published
+  (let* ((author (org-hexo--parse-author info))
+         (title (org-hexo--parse-title info))
+         (date (org-hexo--parse-date info :date))
+         (updated (or (org-hexo--parse-date info :updated) date))
+         (description (plist-get info :description))
+         (keywords (plist-get info :keywords))
+         (category (plist-get info :category))
+         (tags (plist-get info :tags))
+         (permalink (plist-get info :permalink))
+         (lang (plist-get info :language))
+         (status (plist-get info :status))) ;; NOTE: value: draft, published
     (concat
 
      (format title-format title)

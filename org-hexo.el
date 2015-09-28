@@ -56,6 +56,13 @@ can specify `#+HTMLIZE: true' in your file"
   :group 'org-hexo
   :type 'boolean)
 
+(defcustom org-hexo-overwrite-updated nil
+  "Enable this to make org-hexo auto add `updated:' in markdown
+file when not specify,the value will fetch from `date:'
+front-matter."
+  :group 'org-hexo
+  :type 'boolean)
+
 
 ;;;; Load all hexo exporter functions
 ;;

@@ -57,27 +57,26 @@ can specify `#+HTMLIZE: true' in your file"
   :type 'boolean)
 
 
-;;;; Load all pelican exporter functions
+;;;; Load all hexo exporter functions
 ;;
 ;; ox-pelican-core.el -- core or common use functions
-;; ox-pelican-html.el -- HTML exporter
 ;; ox-pelican-md.el   -- Markdown exporter
-;;
+;; FIXME: combine core and md
 (mapcar (lambda (x) (require (intern (format "ox-hexo-%s" x)) nil t))
-        '("core" "html" "md"))
+        '("core" "md"))
 
 
 ;;;; End User Functions
 
-;;;###autoload
-(defun org-hexo-toggle-status ()
-  "Toggle current org-mode file status as `draft' or `published'.
-If #+STATUS: tag not exist, set current status as `draft'."
-  (interactive)
-  (let ((status (or (blogit-get-option :status) "published")))
-    (if (string= status "draft")
-        (blogit-set-option :status "published")
-      (blogit-set-option :status "draft"))))
+;; ;;;###autoload
+;; (defun org-hexo-toggle-status ()
+;;   "Toggle current org-mode file status as `draft' or `published'.
+;; If #+STATUS: tag not exist, set current status as `draft'."
+;;   (interactive)
+;;   (let ((status (or (blogit-get-option :status) "published")))
+;;     (if (string= status "draft")
+;;         (blogit-set-option :status "published")
+;;       (blogit-set-option :status "draft"))))
 
 ;;;###autoload
 (defun org-hexo-update-date ()
@@ -86,7 +85,12 @@ If #+STATUS: tag not exist, set current status as `draft'."
   (blogit-set-option :date
                      (format-time-string org-hexo-date-format)))
 
-
+;;;###autoload
+(defun org-hexo-update-modified ()
+  "Update #+UPDATED: tag with current date info."
+  (interactive)
+  (blogit-set-option :updated
+                     (format-time-string org-hexo-date-format)))
 
 (provide 'org-hexo)
 ;;; org-hexo.el ends here.

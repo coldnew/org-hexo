@@ -43,7 +43,7 @@
   '(
     (:layout    "LAYOUT"     nil     nil)
     (:date      "DATE"       nil     nil)
-    (:update    "UPDATE"     nil     nil)
+    (:updated   "UPDATED"    nil     nil)
     (:comments  "COMMENTS"   nil     nil)
     (:tags      "TAGS"       nil     nil)
     (:category  "CATEGORY"   nil     nil)
@@ -168,9 +168,9 @@ a communication channel."
 
 ;;;; Metadata
 
-(defun org-hexo--parse-date (info)
+(defun org-hexo--parse-date (info key)
   "Parse #+DATE: value."
-  (let ((date (plist-get info :date)))
+  (let ((date (plist-get info key)))
     (and (org-string-nw-p date)
          (if (stringp date)
              ;; raw date info: 2013-08-04 23:28:44
@@ -218,13 +218,14 @@ a communication channel."
 ;; :status: draft
 ;; :status: published
 (defun org-hexo--build-meta-info
-    (info title-format metainfo metainfo* toc)
+    (info title-format metainfo metainfo*)
   "Return meta tags for exported document.
 INFO is a plist used as a communication channel.
 "
   (let ((author (org-hexo--parse-author info))
         (title (org-hexo--parse-title info))
-        (date (org-hexo--parse-date info))
+        (date (org-hexo--parse-date info :date))
+        (date (org-hexo--parse-date info :updated))
         (description (plist-get info :description))
         (keywords (plist-get info :keywords))
         (category (plist-get info :category))
@@ -239,6 +240,7 @@ INFO is a plist used as a communication channel.
 
      (funcall metainfo "author" author)
      (funcall metainfo "date" date)
+     (funcall metainfo "updated" updated)
 
      (funcall metainfo "lang" lang)
      (funcall metainfo "description" description)
@@ -251,10 +253,6 @@ INFO is a plist used as a communication channel.
      (funcall metainfo* "category" category)
      (funcall metainfo* "tags" tags)
 
-     ;; Table of contents
-     ;; (let ((depth (plist-get info :with-toc)))
-     ;;   (when depth
-     ;;     (funcall metainfo "toc" (funcall toc depth info))))
      ;; end of yaml
      "\n---\n"
      ;; Add generator comments

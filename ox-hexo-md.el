@@ -31,6 +31,7 @@
 (eval-when-compile (require 'cl-lib))
 
 (require 'f)
+(require 'ox-html)
 (require 'ox-md)
 (require 'ox-publish)
 
@@ -54,7 +55,6 @@
     (quote-block . org-hexo-md-quote-block)
     ;; Increase headline level
     (headline . org-hexo-md-headline)
-    ;; Fix toc for blogit theme
     (inner-template . org-hexo-md-inner-template)
     (table . org-hexo-md-table)
     )
@@ -78,10 +78,6 @@ a communication channel."
 CONTENTS is the transcoded contents string.  INFO is a plist
 holding export options."
   (concat
-   ;; Table of contents.
-   ;; (let ((depth (plist-get info :with-toc)))
-   ;;   (when depth (org-hexo-html-toc depth info)))
-
    ;; Document contents.
    contents
    ;; Footnotes section.
@@ -115,10 +111,11 @@ a communication channel."
   "Transcode a TABLE element from Org to HTML.
 CONTENTS is the contents of the table.  INFO is a plist holding
 contextual information."
-  ;; remove newline
-  ;; NOTE: https://github.com/iissnan/hexo-theme-next/issues/114
-  (replace-regexp-in-string "\n" ""
-                            (org-html-table table contents info)))
+  (org-html-encode-plain-text
+   ;; remove newline
+   ;; NOTE: https://github.com/iissnan/hexo-theme-next/issues/114
+   (replace-regexp-in-string "\n" ""
+                             (org-html-table table contents info))))
 
 
 ;;;; Headline
@@ -210,10 +207,7 @@ INFO is a plist used as a communication channel."
    ;; method to build compact metainfo
    '(lambda (name var)
       (org-hexo-md---build-meta-info name var 'org-hexo--protect-string*))
-   ;; method to build toc
-   '(lambda (depth info)
-      (org-pelican-html-toc depth info)
-      )))
+   ))
 
 (defun org-hexo-md-template (contents info)
   "Return complete document string after Markdown conversion.

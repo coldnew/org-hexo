@@ -111,11 +111,12 @@ a communication channel."
   "Transcode a TABLE element from Org to HTML.
 CONTENTS is the contents of the table.  INFO is a plist holding
 contextual information."
-  (org-html-encode-plain-text
+;;  (org-html-encode-plain-text
    ;; remove newline
    ;; NOTE: https://github.com/iissnan/hexo-theme-next/issues/114
    (replace-regexp-in-string "\n" ""
-                             (org-html-table table contents info))))
+                             (org-html-table table contents info)))
+;;)
 
 
 ;;;; Headline

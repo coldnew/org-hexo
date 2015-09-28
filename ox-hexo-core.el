@@ -162,9 +162,7 @@ a communication channel."
 
       ;; change link to use asset dir
       (setq hexo-link (s-replace raw-link
-                                 (f-join "data" (file-name-nondirectory raw-path)) hexo-link))
-      )
-
+                                 (f-join "data" (file-name-nondirectory raw-path)) hexo-link)))
     hexo-link))
 
 
@@ -260,7 +258,7 @@ INFO is a plist used as a communication channel.
      ;; end of yaml
      "\n---\n"
      ;; Add generator comments
-     ;;"<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n"
+     "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n"
      )))
 
 ;; buffer   (plist-get info :input-buffer)

@@ -139,7 +139,9 @@ a communication channel."
          (hexo-link (funcall func link contents info))
          (permalink (plist-get info :permalink))
          (output-file (plist-get info :output-file))
-         (data-dir (f-join (file-name-sans-extension output-file) "data")))
+         ;; FIXME: why cause error
+         ;;(data-dir (f-join (file-name-sans-extension output-file) "data"))
+         )
 
     ;; file
     (when (string= type "file")
@@ -239,7 +241,6 @@ INFO is a plist used as a communication channel.
      (format title-format title)
      "\n"
 
-     (funcall metainfo "generator" "org-hexo")
      (funcall metainfo "author" author)
      (funcall metainfo "date" date)
 
@@ -261,8 +262,7 @@ INFO is a plist used as a communication channel.
      ;; end of yaml
      "\n---\n"
      ;; Add generator comments
-     "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n"
-     )
+     "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n")
     ))
 
 ;; buffer   (plist-get info :input-buffer)

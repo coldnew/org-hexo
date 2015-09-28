@@ -225,7 +225,7 @@ INFO is a plist used as a communication channel.
   (let ((author (org-hexo--parse-author info))
         (title (org-hexo--parse-title info))
         (date (org-hexo--parse-date info :date))
-        (date (org-hexo--parse-date info :updated))
+        (updated (org-hexo--parse-date info :updated))
         (description (plist-get info :description))
         (keywords (plist-get info :keywords))
         (category (plist-get info :category))

@@ -139,32 +139,30 @@ a communication channel."
          (hexo-link (funcall func link contents info))
          (permalink (plist-get info :permalink))
          (output-file (plist-get info :output-file))
-         ;; FIXME: why cause error
-         ;;(data-dir (f-join (file-name-sans-extension output-file) "data"))
-         )
+         ;; FIXME: make user control the data dir name
+         (asset-dir (f-join (file-name-sans-extension output-file) "data")))
 
     ;; file
     (when (string= type "file")
+
       ;; check if file porint to absolute path
       (when (file-name-absolute-p raw-link)
         ;; calculate relative link for current post
         (setq raw-link (f-relative raw-path
-                                   (file-name-directory (buffer-file-name (current-buffer)))))
+                                   (file-name-directory (plist-get info :input-file))))
+
         (setq hexo-link (s-replace (concat "file://" raw-path) raw-link hexo-link)))
 
-      ;; convert relative path from `data/xxx.png' to `/data/xxx.png'
+      ;; Create hexo's asset directory to save file
+      (make-directory asset-dir t)
+
+      ;; Copy file to asset dir
+      (message (format "Copy files %s to %s." raw-path asset-dir))
+      (org-hexo--do-copy raw-path  (f-slash asset-dir))
+
+      ;; change link to use asset dir
       (setq hexo-link (s-replace raw-link
-                                 (concat "/" raw-link) hexo-link))
-
-      ;; Copy file to output file dir
-      ;;      (message (format "---> file: %s" raw-path))
-
-      ;; Create directory to save file
-      ;;      (make-directory data-dir t)
-
-      ;; Copy file to data dir
-      ;;      (message (format "Copy files %s to %s." raw-path data-dir))
-      ;;      (org-hexo--do-copy raw-path  (f-slash data-dir))
+                                 (f-join "data" (file-name-nondirectory raw-path)) hexo-link))
       )
 
     hexo-link))

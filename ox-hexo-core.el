@@ -154,17 +154,17 @@ a communication channel."
 
       ;; convert relative path from `data/xxx.png' to `/data/xxx.png'
       (setq hexo-link (s-replace raw-link
-                                       (concat "/" raw-link) hexo-link))
+                                 (concat "/" raw-link) hexo-link))
 
       ;; Copy file to output file dir
-;;      (message (format "---> file: %s" raw-path))
+      ;;      (message (format "---> file: %s" raw-path))
 
       ;; Create directory to save file
-;;      (make-directory data-dir t)
+      ;;      (make-directory data-dir t)
 
       ;; Copy file to data dir
-;;      (message (format "Copy files %s to %s." raw-path data-dir))
-;;      (org-hexo--do-copy raw-path  (f-slash data-dir))
+      ;;      (message (format "Copy files %s to %s." raw-path data-dir))
+      ;;      (org-hexo--do-copy raw-path  (f-slash data-dir))
       )
 
     hexo-link))
@@ -262,8 +262,8 @@ INFO is a plist used as a communication channel.
      ;; end of yaml
      "\n---\n"
      ;; Add generator comments
-     "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n")
-    ))
+     ;;"<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n"
+     )))
 
 ;; buffer   (plist-get info :input-buffer)
 ;; filename (plist-get info :input-file)

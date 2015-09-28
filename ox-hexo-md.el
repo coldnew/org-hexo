@@ -108,6 +108,9 @@ a communication channel."
      "!\\[img\\](\\(.*?\\))" "![](\\1)" md-link)
     ))
 
+
+;;;; Table
+
 (defun org-hexo-md-table (table contents info)
   "Transcode a TABLE element from Org to HTML.
 CONTENTS is the contents of the table.  INFO is a plist holding

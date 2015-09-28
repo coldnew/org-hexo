@@ -49,6 +49,13 @@
   :group 'org-hexo
   :type 'string)
 
+(defcustom org-hexo-htmlize-src-block nil
+  "Enable to use htmlize to render src block.
+This one is global variable, if you want to make some page use htmlize, you
+can specify `#+HTMLIZE: true' in your file"
+  :group 'org-hexo
+  :type 'boolean)
+
 
 ;;;; Load all pelican exporter functions
 ;;

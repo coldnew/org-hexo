@@ -35,23 +35,40 @@
 (require 's)
 (require 'ox-publish)
 
+
+
+;;;; Customize Options
+
+(defcustom org-hexo-enable-htmlize t
+  "Enable to use `htmlize' to render src block."
+  :group 'org-hexo
+  :type 'boolean)
+
+;; FIXME: this only use by myself
+(defcustom org-hexo-enable-feed t
+  :group 'org-hexo
+  :type 'boolean)
+
 
 ;;;; Backend general
 
+
 ;; hexo metadata
 (defvar org-hexo--options-alist
-  '(
-    (:layout    "LAYOUT"     nil     nil)
+  '(;; buildin in org-mode
     (:date      "DATE"       nil     nil)
-    (:updated   "UPDATED"    nil     nil)
-    (:comments  "COMMENTS"   nil     nil)
     (:tags      "TAGS"       nil     nil)
     (:category  "CATEGORY"   nil     nil)
+    ;; Need by hexo
+    (:layout    "LAYOUT"     nil     nil)
+    (:updated   "UPDATED"    nil     nil)
+    (:comments  "COMMENTS"   nil     nil)
     (:permalink "PERMALINK"  nil     nil)
     ;; TODO:
     (:status   "STATUS"     nil     nil)
-    ;; enable htmlize syntax highlight
-    (:htmlize   "HTMLIZE"    nil     nil)
+    ;; #+HEXO: feed:t htmlize:nil
+    (:hexo-htmlize   nil    "htmlize"     org-hexo-enable-htmlize t)
+    (:hexo-feed      nil    "feed"        org-hexo-enable-feed t)
     ))
 
 
@@ -232,6 +249,7 @@ INFO is a plist used as a communication channel.
          (keywords (plist-get info :keywords))
          (category (plist-get info :category))
          (tags (plist-get info :tags))
+         (feed (plist-get info :hexo-feed))
          (permalink (plist-get info :permalink))
          (lang (plist-get info :language))
          (status (plist-get info :status))) ;; NOTE: value: draft, published
@@ -255,11 +273,15 @@ INFO is a plist used as a communication channel.
      (funcall metainfo* "category" category)
      (funcall metainfo* "tags" tags)
 
+     ;; We enable feed by default
+     (funcall metainfo "feed" feed)
+
      ;; end of yaml
      "\n---\n"
      ;; Add generator comments
      "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n"
-     )))
+     )
+    ))
 
 ;; buffer   (plist-get info :input-buffer)
 ;; filename (plist-get info :input-file)

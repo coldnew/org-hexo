@@ -14,3 +14,8 @@ org-hexo support following backend, which help you convert org-mode article to a
 - [X] Markdown
 
   untest yet, but it might work.
+* OPTIONS
+
+#+BEGIN_SRC org
+  ,#+OPTIONS: htmlize:nil feed:nil
+#+END_SRC

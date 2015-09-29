@@ -176,6 +176,34 @@ If parsing failed, use regexp to get the options, else return nil.
   (interactive)
   )
 
+;;;###autoload
+(defun org-hexo-insert-template (&optional filename)
+  "Insert org-hexo newpost template."
+  (interactive)
+  )
+
+
+;;;###autoload
+(defun org-hexo-publish (&optional force)
+  "Published modified blogit files."
+  (interactive)
+  )
+
+;;;###autoload
+(defun org-hexo-publish-current-post (&optional force)
+  "Published current post."
+  (interactive)
+  ;; Check if current post is belong to org-hexo.
+  )
+
+;;;###autoload
+(defun oeg-hexo-republish (&optional force)
+  "Re-publish all blogit files."
+  (interactive)
+  )
+
+
+
 ;;;; TODO: remove blogit depends
 
 (provide 'org-hexo)

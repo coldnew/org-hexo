@@ -6,7 +6,7 @@
 ;; Keywords:
 ;; X-URL: http://github.com/coldnew/org-hexo
 ;; Version: 0.1
-;; Package-Requires: ((org "8.0") (cl-lib "0.5") (f "0.17.2") (blogit "0.1"))
+;; Package-Requires: ((org "8.0") (cl-lib "0.5") (f "0.17.2"))
 
 ;; This file is not part of GNU Emacs.
 
@@ -63,6 +63,76 @@ front-matter."
   :group 'org-hexo
   :type 'boolean)
 
+(defcustom org-hexo-newpost-template nil
+  "The template file for create hexo newpost."
+  :group 'org-hexo
+  :type 'string)
+
+
+;;; Internal helper functions
+
+(defun org-hexo--string-to-key (string)
+  "Conver string to key. eq: \"test\" -> :test"
+  (intern (format ":%s" string)))
+
+(defun org-hexo--symbol-to-key (symbol)
+  "Conver symbol to key. eq: test -> :test"
+  (org-hexo--string-to-key (symbol-name symbol)))
+
+(defun org-hexo--key-to-string (key)
+  "Conver key to string. eq: :test -> \"test\""
+  (let ((key-str (symbol-name key)))
+    (s-right (- (length key-str) 1) key-str)))
+
+(defun org-hexo--key-to-symbol (key)
+  "Conver key to symbol. eq: test -> :test"
+  (intern (org-hexo--key-to-string key)))
+
+(defun org-hexo--set-option (key value)
+  "Modify option value of org file opened in current buffer.
+If option does not exist, create it automatically."
+  (let* ((option (upcase (org-hexo--key-to-string key)))
+         (match-regexp (org-make-options-regexp `(,option)))
+         (blank-regexp "^#\\+\\(\\w*\\):[        ]*\\(.*\\)")
+         (insert-option '(insert (concat "#+" option ": " value)))
+         (mpoint))
+    (save-excursion
+      (goto-char (point-min))
+      (if (re-search-forward match-regexp nil t)
+          (progn
+            (goto-char (point-at-bol))
+            (kill-line)
+            (eval insert-option))
+        ;; no option found, insert it
+        (progn
+          (goto-char (point-min))
+          (while (re-search-forward blank-regexp nil t)
+            (setq mpoint (point)))
+          (if (not mpoint) (setq mpoint (point-min)))
+          (goto-char mpoint)
+          (when (not (= mpoint (point-min)))
+            (goto-char (point-at-eol))
+            (newline-and-indent))
+          (eval insert-option)
+          (if (= mpoint (point-min))
+              (newline-and-indent))
+          )))))
+
+(defun org-hexo--get-option (key)
+  "Read option value of org file opened in current buffer.
+
+This function will first use the standard way to parse org-option.
+If parsing failed, use regexp to get the options, else return nil.
+"
+  (let* ((option (upcase (org-hexo--key-to-string key)))
+         (match-regexp (org-make-options-regexp `(,option))))
+
+    ;; use regexp to find options
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward match-regexp nil t)
+        (match-string-no-properties 2 nil)))))
+
 
 ;;;; Load all hexo exporter functions
 ;;
@@ -80,24 +150,33 @@ front-matter."
 ;;   "Toggle current org-mode file status as `draft' or `published'.
 ;; If #+STATUS: tag not exist, set current status as `draft'."
 ;;   (interactive)
-;;   (let ((status (or (blogit-get-option :status) "published")))
+;;   (let ((status (or (org-hexo--get-option :status) "published")))
 ;;     (if (string= status "draft")
-;;         (blogit-set-option :status "published")
-;;       (blogit-set-option :status "draft"))))
+;;         (org-hexo--set-option :status "published")
+;;       (org-hexo--set-option :status "draft"))))
 
 ;;;###autoload
 (defun org-hexo-update-date ()
   "Update #+DATE: tag with current date info."
   (interactive)
-  (blogit-set-option :date
+  (org-hexo--set-option :date
                      (format-time-string org-hexo-date-format)))
 
 ;;;###autoload
 (defun org-hexo-update-modified ()
   "Update #+UPDATED: tag with current date info."
   (interactive)
-  (blogit-set-option :updated
+  (org-hexo--set-option :updated
                      (format-time-string org-hexo-date-format)))
+
+;; FIXME:
+;;;###autoload
+(defun org-hexo-new-post ()
+  "Update #+DATE: tag with current date info."
+  (interactive)
+  )
+
+;;;; TODO: remove blogit depends
 
 (provide 'org-hexo)
 ;;; org-hexo.el ends here.

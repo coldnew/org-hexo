@@ -46,6 +46,7 @@
 
 ;; FIXME: this only use by myself
 (defcustom org-hexo-enable-feed t
+  ""
   :group 'org-hexo
   :type 'boolean)
 

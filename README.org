@@ -1,0 +1,16 @@
+#+TITLE: org-hexo -- org-mode exporter for Hexo
+
+org-hexo is an org-mode exporter for [[https://hexo.io/zh-tw/][hexio]] static site generator. I write
+this for my personal's [[http://coldnew.github.io][blog]].
+
+#+BEGIN_QUOTE
+This project is under development
+#+END_QUOTE
+
+* Backend
+
+org-hexo support following backend, which help you convert org-mode article to another type file
+
+- [X] Markdown
+
+  untest yet, but it might work.

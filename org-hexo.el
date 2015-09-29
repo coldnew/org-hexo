@@ -36,10 +36,10 @@
 ;;;; Group
 
 (defgroup org-hexo nil
-  "Options for exporting Org mode files to pelican."
-  :tag "Org Export to hexo html/md files."
+  "Options for exporting Org mode files to hexo markdown."
+  :tag "Org Export to hexo markdown files."
   :group 'org-export
-  :link '(url-link :tag "Github" "https://github.com/coldnew/org-pelican"))
+  :link '(url-link :tag "Github" "https://github.com/coldnew/org-hexo"))
 
 
 ;;;; Custom
@@ -136,8 +136,8 @@ If parsing failed, use regexp to get the options, else return nil.
 
 ;;;; Load all hexo exporter functions
 ;;
-;; ox-pelican-core.el -- core or common use functions
-;; ox-pelican-md.el   -- Markdown exporter
+;; ox-hexo-core.el -- core or common use functions
+;; ox-hexo-md.el   -- Markdown exporter
 ;; FIXME: combine core and md
 (mapcar (lambda (x) (require (intern (format "ox-hexo-%s" x)) nil t))
         '("core" "md"))

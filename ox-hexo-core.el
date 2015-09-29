@@ -260,7 +260,10 @@ INFO is a plist used as a communication channel.
 
      (funcall metainfo "author" author)
      (funcall metainfo "date" date)
-     (funcall metainfo "updated" updated)
+
+     (when org-hexo-overwrite-updated
+       (funcall metainfo "updated"
+                (or (org-hexo--parse-date info :updated) date)))
 
      (funcall metainfo "lang" lang)
      (funcall metainfo "description" description)

@@ -49,6 +49,7 @@
   :group 'org-hexo
   :type 'string)
 
+;; FIXME: merge with `org-hexo-enable-htmlize'
 (defcustom org-hexo-htmlize-src-block nil
   "Enable to use htmlize to render src block.
 This one is global variable, if you want to make some page use htmlize, you
@@ -62,6 +63,11 @@ file when not specify,the value will fetch from `date:'
 front-matter."
   :group 'org-hexo
   :type 'boolean)
+
+(defcustom org-hexo-permalink-format ""
+  "Format use in #+PERMALINK: metadata."
+  :group 'org-hexo
+  :type 'string)
 
 (defcustom org-hexo-newpost-template nil
   "The template file for create hexo newpost."

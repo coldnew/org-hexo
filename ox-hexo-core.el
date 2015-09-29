@@ -74,19 +74,18 @@
 
 ;;;; Internal functions
 
-(defun org-hexo--protect-tag (tag)
+(defun org-hexo--protect-tag (text)
   "Convert:
        _     ->  <space>
        @     ->  -
      <space> ->  ,
 "
-  (replace-regexp-in-string
-   "_" " "
-   (replace-regexp-in-string
-    " " ","
-    (replace-regexp-in-string
-     "@" "-"
-     tag))))
+  (let ((protect-char-alist
+         '(("_" . " ")
+           (" " . ",")
+           ("@" . "-"))))
+    (dolist (pair protect-char-alist text)
+      (setq text (replace-regexp-in-string (car pair) (cdr pair) text t t)))))
 
 (defun org-hexo--protect-string (str)
   "Convert \" -> &quot;"

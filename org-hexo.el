@@ -211,6 +211,7 @@ If parsing failed, use regexp to get the options, else return nil.
 
 
 ;;;; TODO: remove blogit depends
+;; ref: https://github.com/RNAer/org-blog/blob/master/ox-blog.el
 
 (provide 'org-hexo)
 ;;; org-hexo.el ends here.

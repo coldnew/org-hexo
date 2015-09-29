@@ -204,7 +204,6 @@ a communication channel."
   (let ((title (plist-get info :title)))
     (org-export-data (or title "") info)))
 
-;; TODO: how about #+AUTHORS: ?
 (defun org-hexo--parse-author (info)
   "Parse #+AUTOHR: value."
   (and (plist-get info :with-author)
@@ -217,24 +216,6 @@ a communication channel."
                    (cons 'plain-text org-element-all-objects)
                  'identity info))))))
 
-(defun org-hexo--parse-gravatar (info)
-  "Generate metadata for gravatar from #+EMAIL:."
-  (let ((email (plist-get info :email)))
-    (if email
-        (format "http://www.gravatar.com/avatar/%s" (md5 email))
-      "")))
-
-;; :date: 2010-10-03 10:20
-;; :modified: 2010-10-04 18:40
-;; :tags: thats, awesome
-;; :category: yeah
-;; :slug: my-super-post
-;; :authors: Alexis Metaireau, Conan Doyle
-;; :summary: Short version for index and feeds
-;; :lang: en
-;; :translation: true
-;; :status: draft
-;; :status: published
 (defun org-hexo--build-meta-info
     (info title-format metainfo metainfo*)
   "Return meta tags for exported document.
@@ -284,18 +265,6 @@ INFO is a plist used as a communication channel.
      "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n"
      )
     ))
-
-;; buffer   (plist-get info :input-buffer)
-;; filename (plist-get info :input-file)
-;; output-file (plist-get info :output-file)
-
-;; (:export-options
-;;  nil
-;;  :input-buffer "編譯 wandboard 的 Android 4.4.2 系統.org<tmp>"
-;;  :input-file "/Users/coldnew/Workspace/hexo-blogs/tmp/blog/編譯 wandboard 的 Android 4.4.2 系統.org"
-;;  :layout nil
-;;  :date "2015-09-07 23:28:44")
-;; -
 
 (provide 'ox-hexo-core)
 ;;; ox-hexo-core.el ends here.

@@ -225,7 +225,7 @@ as a communication channel."
 ;;; End-user functions
 
 ;;;###autoload
-(defun org-hexo-export-as-md
+(defun org-hexo-export-as-markdown
     (&optional async subtreep visible-only body-only ext-plist)
   "Export current buffer to an HTML buffer for blogit.
 
@@ -238,7 +238,7 @@ is non-nil."
     (lambda () (markdown-mode))))
 
 ;;;###autoload
-(defun org-hexo-publish-to-md (plist filename pub-dir)
+(defun org-hexo-publish-to-markdown (plist filename pub-dir)
   "Publish an org file to rst.
 
 FILENAME is the filename of the Org file to be published.  PLIST

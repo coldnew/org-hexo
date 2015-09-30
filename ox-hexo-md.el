@@ -164,8 +164,11 @@ contextual information."
          "</pre>\n</div>" "</pre></div>"
          (replace-regexp-in-string
           "<div class=\"org-src-container\">\n\n<pre" "<div class=\"org-src-container\"><pre"
-          (format "%s"
-                  (org-html-src-block src-block contents info))))
+          ;; when use in markdown, we need to convert `\' to `\\'
+          (replace-regexp-in-string
+           "\\\\" "\\\\\\\\"
+           (format "%s"
+                   (org-html-src-block src-block contents info)))))
 
       ;; Convert to hexo markdown format
       (concat

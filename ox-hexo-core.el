@@ -82,9 +82,9 @@
      <space> ->  ,
 "
   (let ((protect-char-alist
-         '(("_" . " ")
+         '(("@" . "-")
            (" " . ",")
-           ("@" . "-"))))
+           ("_" . " "))))
     (dolist (pair protect-char-alist text)
       (setq text (replace-regexp-in-string (car pair) (cdr pair) text t t)))))
 

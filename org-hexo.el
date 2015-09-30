@@ -175,7 +175,7 @@ list in `org-hexo-project-alist', do not prompt."
              (list (car org-hexo-project-alist))
            (list
             (assoc (org-icompleting-read
-                    (or msg "Publish blogit project: ")
+                    (or msg "Publish org-hexo project: ")
                     org-hexo-project-alist nil t)
                    org-hexo-project-alist)
             current-prefix-arg))))
@@ -294,7 +294,7 @@ When force is t, re-publish selected blogit project."
   (interactive)
   (noflet ((org-hexo--republish-project
             (project-list)
-            (org-hexo--publish-project project-list t)))
+            (--publish-project project-list t)))
     (org-hexo--select-project 'org-hexo--republish-project)))
 
 ;;;###autoload

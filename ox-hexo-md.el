@@ -92,17 +92,10 @@ CONTENTS is the link's description.  INFO is a plist used as
 a communication channel."
   (let ((org-md-link-org-files-as-md nil)
         (md-link (org-hexo--link 'org-md-link link contents info)))
-    ;; Fancybox support
-    ;; convert:
-    ;;    ![img]({filename}data/test.png)   ->  ![img]({filename}data/test.png){.fancybox}
-    ;; (replace-regexp-in-string
-    ;;  "!\\[img\\](\\(.*?\\))" "![img](\\1){.fancybox}" md-link)
-
     ;; convert:
     ;;    ![img](data/test.png)   -> ![](data/test.png)
     (replace-regexp-in-string
-     "!\\[img\\](\\(.*?\\))" "![](\\1)" md-link)
-    ))
+     "!\\[img\\](\\(.*?\\))" "![](\\1)" md-link)))
 
 
 ;;;; Table

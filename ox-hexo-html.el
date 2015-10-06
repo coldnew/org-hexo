@@ -95,37 +95,14 @@ In this function, we also add link file"
 
 ;;; Template
 
-(defun org-hexo-html---build-meta-info (name var func)
-  (and (org-string-nw-p var)
-       (concat
-        (org-html-close-tag "meta"
-                            (format " name=\"%s\" content=\"%s\""
-                                    name
-                                    (funcall func var))
-                            info)
-        "\n")))
-
-(defun org-hexo-html--build-meta-info (info)
-  "Return meta tags for exported document.
-INFO is a plist used as a communication channel."
-  (org-hexo--build-meta-info
-   info
-   ;; title format
-   "<title>%s</title>"
-   ;; method to build generic metainfo
-   '(lambda (name var)
-      (org-hexo-html---build-meta-info name var 'org-hexo--protect-string))
-   ;; method to build compact metainfo
-   '(lambda (name var)
-      (org-hexo-html---build-meta-info name var 'org-hexo--protect-string*))))
-
 (defun org-hexo-html-template (contents info)
   "Return complete document string after HTML conversion.
 CONTENTS is the transcoded contents string.  INFO is a plist
 holding export options."
   (concat
    ;; Add yml meta info
-   (org-hexo-md--build-meta-info info)
+   ;;(org-hexo-md--build-meta-info info)
+   (org-hexo--build-front-matter info)
    ;; start html header
    (org-html-doctype info)
    "\n"

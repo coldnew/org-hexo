@@ -164,41 +164,12 @@ holding contextual information."
 
 ;;;; Template
 
-(defun org-hexo-md---build-meta-info (name var func)
-  (and (org-string-nw-p var)
-       (format "%s: %s\n" name
-               (concat
-                (if (s-equals-p name "tags") "[ " "")
-                (funcall func var)
-                (if (s-equals-p name "tags") " ]" "")))
-       ))
-
-(defun org-hexo-md--build-meta-info (info)
-  "Return meta tags for exported document.
-INFO is a plist used as a communication channel."
-  (concat
-   "---\n"
-   (org-hexo--build-meta-info
-    info
-    ;; title format
-    "title: %s"
-    ;; method to build generic metainfo
-    '(lambda (name var)
-       (org-hexo-md---build-meta-info name var 'org-hexo--protect-string))
-    ;; method to build compact metainfo
-    '(lambda (name var)
-       (org-hexo-md---build-meta-info name var 'org-hexo--protect-string*))
-    )
-   "---\n"
-   ;; Add generator comments
-   "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n"))
-
 (defun org-hexo-md-template (contents info)
   "Return complete document string after Markdown conversion.
 CONTENTS is the transcoded contents string.  INFO is a plist used
 as a communication channel."
   (concat
-   (org-hexo-md--build-meta-info info)
+   (org-hexo--build-front-matter info)
    "\n"
    contents))
 

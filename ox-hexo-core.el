@@ -211,49 +211,54 @@ a communication channel."
                    (cons 'plain-text org-element-all-objects)
                  'identity info))))))
 
-(defun org-hexo--build-meta-info
-    (info title-format metainfo metainfo*)
-  "Return meta tags for exported document.
-INFO is a plist used as a communication channel.
-"
-  (let* ((author (org-hexo--parse-author info))
-         (title (org-hexo--parse-title info))
-         (date (org-hexo--parse-date info :date))
+(defun org-hexo---build-front-matter (name var)
+  (and (org-string-nw-p var)
+       (format "%s: %s\n" name (org-hexo--protect-string var))))
+
+(defun org-hexo---build-front-matter* (name var)
+  (and (org-string-nw-p var)
+       (format "%s: %s\n" name
+               (concat
+                (if (s-equals-p name "tags") "[ " "")
+                (org-hexo--protect-string* var)
+                (if (s-equals-p name "tags") " ]" "")))))
+
+(defun org-hexo--build-front-matter (info)
+  (let* ((date (org-hexo--parse-date info :date))
          (updated (or (org-hexo--parse-date info :updated) date))
-         (description (plist-get info :description))
-         (keywords (plist-get info :keywords))
          (category (plist-get info :category))
          (tags (plist-get info :tags))
-         (feed (plist-get info :hexo-feed))
-         (permalink (plist-get info :permalink))
-         (lang (plist-get info :language))
-         (status (plist-get info :status))) ;; NOTE: value: draft, published
+         )
     (concat
+     "---\n"
+     ;; user info
+     (org-hexo---build-front-matter "title" (org-hexo--parse-title info))
+     (org-hexo---build-front-matter "author" (org-hexo--parse-author info))
 
-     (format title-format title)
-     "\n"
-
-     (funcall metainfo "author" author)
-     (funcall metainfo "date" date)
+     ;; date
+     (org-hexo---build-front-matter "date" date)
 
      (when org-hexo-overwrite-updated
-       (funcall metainfo "updated"
-                (or (org-hexo--parse-date info :updated) date)))
+       (org-hexo---build-front-matter
+        "updated"
+        (or (org-hexo--parse-date info :updated) date)))
 
-     (funcall metainfo "lang" lang)
-     (funcall metainfo "description" description)
-     (funcall metainfo "keywords" keywords)
+     (org-hexo---build-front-matter "lang" (plist-get info :language))
+     (org-hexo---build-front-matter "description" (plist-get info :description))
+     (org-hexo---build-front-matter "keywords" (plist-get info :keywords))
+     (org-hexo---build-front-matter "permalink" (plist-get info :permalink))
+     (org-hexo---build-front-matter "feed"  (plist-get info :hexo-feed))
 
-     (funcall metainfo "permalink" permalink)
-     (funcall metainfo "status" status)
+     ;; NOTE: value: draft, published
+     ;; FIXME: finish this function
+     (org-hexo---build-front-matter "status" (plist-get info :status))
 
      ;; compact version
-     (funcall metainfo* "category" category)
-     (funcall metainfo* "tags" tags)
-
-     ;; We enable feed by default
-     (funcall metainfo "feed" feed)
-     )))
+     (org-hexo---build-front-matter* "category" category)
+     (org-hexo---build-front-matter* "tags" tags)
+     "---\n"
+     ;; Add generator comments
+     "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n")))
 
 (provide 'ox-hexo-core)
 ;;; ox-hexo-core.el ends here.

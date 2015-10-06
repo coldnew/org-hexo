@@ -237,9 +237,9 @@ When force is t, re-publish selected blogit project."
 ;;
 ;; ox-hexo-core.el -- core or common use functions
 ;; ox-hexo-md.el   -- Markdown exporter
-;; FIXME: combine core and md
+;; ox-hexo-html.el -- HTML exporter
 (mapcar (lambda (x) (require (intern (format "ox-hexo-%s" x)) nil t))
-        '("core" "md"))
+        '("core" "md" "html"))
 
 
 ;;;; End User Functions

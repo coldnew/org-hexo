@@ -259,13 +259,7 @@ INFO is a plist used as a communication channel.
 
      ;; We enable feed by default
      (funcall metainfo "feed" feed)
-
-     ;; end of yaml
-     "\n---\n"
-     ;; Add generator comments
-     "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n"
-     )
-    ))
+     )))
 
 (provide 'ox-hexo-core)
 ;;; ox-hexo-core.el ends here.

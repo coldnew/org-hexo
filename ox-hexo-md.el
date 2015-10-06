@@ -166,9 +166,9 @@ contextual information."
           "<div class=\"org-src-container\">\n\n<pre" "<div class=\"org-src-container\"><pre"
           ;; when use in markdown, we need to convert `\' to `\\'
           (replace-regexp-in-string
-            "\\\\" "\\\\\\\\"
-            (format "%s"
-                    (org-html-src-block src-block contents info)))))
+           "\\\\" "\\\\\\\\"
+           (format "%s"
+                   (org-html-src-block src-block contents info)))))
 
       ;; Convert to hexo markdown format
       (concat
@@ -203,17 +203,22 @@ holding contextual information."
 (defun org-hexo-md--build-meta-info (info)
   "Return meta tags for exported document.
 INFO is a plist used as a communication channel."
-  (org-hexo--build-meta-info
-   info
-   ;; title format
-   "title: %s"
-   ;; method to build generic metainfo
-   '(lambda (name var)
-      (org-hexo-md---build-meta-info name var 'org-hexo--protect-string))
-   ;; method to build compact metainfo
-   '(lambda (name var)
-      (org-hexo-md---build-meta-info name var 'org-hexo--protect-string*))
-   ))
+  (concat
+   "---\n"
+   (org-hexo--build-meta-info
+    info
+    ;; title format
+    "title: %s"
+    ;; method to build generic metainfo
+    '(lambda (name var)
+       (org-hexo-md---build-meta-info name var 'org-hexo--protect-string))
+    ;; method to build compact metainfo
+    '(lambda (name var)
+       (org-hexo-md---build-meta-info name var 'org-hexo--protect-string*))
+    )
+   "---\n"
+   ;; Add generator comments
+   "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n"))
 
 (defun org-hexo-md-template (contents info)
   "Return complete document string after Markdown conversion.

@@ -130,15 +130,11 @@ a communication channel."
   "Transcode EXAMPLE-BLOCK element into Markdown format.
 CONTENTS is nil.  INFO is a plist used as a communication
 channel."
-  (let ((htmlize (plist-get info :hexo-htmlize)))
-    (if htmlize
-        (org-html-example-block example-block contents info)
-      ;; convert example block to markdown syntax
-      (replace-regexp-in-string
-       "^" "    "
-       (org-remove-indentation
-        (org-export-format-code-default example-block info)))
-      )))
+  ;; convert example block to markdown syntax
+  (replace-regexp-in-string
+   "^" "    "
+   (org-remove-indentation
+    (org-export-format-code-default example-block info))))
 
 ;;;; Src Block
 
@@ -146,31 +142,15 @@ channel."
   "Transcode a SRC-BLOCK element from Org to HTML.
 CONTENTS holds the contents of the item.  INFO is a plist holding
 contextual information."
-  (let ((lang (org-element-property :language src-block))
-        (htmlize (plist-get info :hexo-htmlize)))
-
-    (if htmlize
-        ;; FIXME:
-        ;;  we remove newline here since hexo's parser
-        ;;  will generate extra newline
-        (replace-regexp-in-string
-         "</pre>\n</div>" "</pre></div>"
-         (replace-regexp-in-string
-          "<div class=\"org-src-container\">\n\n<pre" "<div class=\"org-src-container\"><pre"
-          ;; when use in markdown, we need to convert `\' to `\\'
-          (replace-regexp-in-string
-           "\\\\" "\\\\\\\\"
-           (format "%s"
-                   (org-html-src-block src-block contents info)))))
-
-      ;; Convert to hexo markdown format
-      (concat
-       (format "{%% codeblock lang:%s %%}" lang)
-       "\n"
-       (format "%s"
-               (org-md-example-block src-block contents info))
-       (format "{%% endcodeblock %%}"))
-      )))
+  (let ((lang (org-element-property :language src-block)))
+    ;; Convert to hexo markdown format
+    (concat
+     (format "{%% codeblock lang:%s %%}" lang)
+     "\n"
+     (format "%s"
+             (org-md-example-block src-block contents info))
+     (format "{%% endcodeblock %%}"))
+    ))
 
 
 ;;;; Quote Block

@@ -39,11 +39,6 @@
 
 ;;;; Customize Options
 
-(defcustom org-hexo-enable-htmlize t
-  "Enable to use `htmlize' to render src block."
-  :group 'org-hexo
-  :type 'boolean)
-
 ;; FIXME: this only use by myself
 (defcustom org-hexo-enable-feed t
   ""
@@ -67,8 +62,7 @@
     (:permalink "PERMALINK"  nil     nil)
     ;; TODO:
     (:status   "STATUS"     nil     nil)
-    ;; #+HEXO: feed:t htmlize:nil
-    (:hexo-htmlize   nil    "htmlize"     org-hexo-enable-htmlize t)
+    ;; #+HEXO: feed:t
     (:hexo-feed      nil    "feed"        org-hexo-enable-feed t)
     ))
 

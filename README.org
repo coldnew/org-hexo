@@ -15,9 +15,9 @@ org-hexo support following backend, which help you convert org-mode article to a
 
   It might work, but it may have problem when you enable =htmlize=, so this feature will move to use HTML backend
 
-- [ ] HTML
+- [X] HTML
 
-  Not test yet.
+  Now I use this :)
 
 * OPTIONS
 

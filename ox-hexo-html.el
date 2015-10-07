@@ -45,7 +45,7 @@
     (template . org-hexo-html-template)
     ;; Fix for multibyte language
     (paragraph . org-hexo-html-paragraph)
-    ;; Fix toc for blogit theme
+    ;; Fix toc for org-hexo theme
     (inner-template . org-hexo-html-inner-template)
     ;; convert relative link to let pelican can recognize
     (link . org-hexo-html-link)
@@ -129,13 +129,13 @@ holding export options."
 ;;;###autoload
 (defun org-hexo-export-as-html
     (&optional async subtreep visible-only body-only ext-plist)
-  "Export current buffer to an HTML buffer for blogit.
+  "Export current buffer to an HTML buffer for org-hexo.
 
-Export is done in a buffer named \"*Blogit HTML Export*\", which
+Export is done in a buffer named \"*Hexo HTML Export*\", which
 will be displayed when `org-export-show-temporary-export-buffer'
 is non-nil."
   (interactive)
-  (org-export-to-buffer 'hexo-html "*hexo HTML Export*"
+  (org-export-to-buffer 'hexo-html "*Hexo HTML Export*"
     async subtreep visible-only body-only ext-plist
     (lambda () (html-mode))))
 

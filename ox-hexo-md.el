@@ -179,13 +179,13 @@ as a communication channel."
 ;;;###autoload
 (defun org-hexo-export-as-markdown
     (&optional async subtreep visible-only body-only ext-plist)
-  "Export current buffer to an HTML buffer for blogit.
+  "Export current buffer to an HTML buffer for org-hexo.
 
-Export is done in a buffer named \"*Blogit HTML Export*\", which
+Export is done in a buffer named \"*Hexo HTML Export*\", which
 will be displayed when `org-export-show-temporary-export-buffer'
 is non-nil."
   (interactive)
-  (org-export-to-buffer 'hexo-md "*hexo markdown Export*"
+  (org-export-to-buffer 'hexo-md "*Hexo Markdown Export*"
     async subtreep visible-only body-only ext-plist
     (lambda () (markdown-mode))))
 

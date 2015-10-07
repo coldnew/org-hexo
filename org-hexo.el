@@ -30,8 +30,6 @@
 
 (eval-when-compile (require 'cl-lib))
 
-(require 'blogit)
-
 
 ;;;; Group
 
@@ -59,7 +57,7 @@
 ;; NOTE: These variable should be defined in user's config.el file
 
 (defvar org-hexo-output-directory nil
-  "This variable should be defined in user's blogit config.el.
+  "This variable should be defined in user's org-hexo config.el.
 This path also contains org-mode's `~/.org-timestamp' file as cache.")
 
 
@@ -155,7 +153,7 @@ If parsing failed, use regexp to get the options, else return nil.
         (match-string-no-properties 2 nil)))))
 
 (defun org-hexo--clear-private-variables ()
-  "Clear all private variables in blogit."
+  "Clear all private variables in org-hexo."
   (setq
    ;; Config variables
    org-hexo-output-directory nil
@@ -181,7 +179,7 @@ list in `org-hexo-project-alist', do not prompt."
             current-prefix-arg))))
     ;; clear all private variable before load config file.
     (org-hexo--clear-private-variables)
-    ;; load config according blogit-project-list
+    ;; load config according org-hexo-project-list
     (let ((config (plist-get (cdar project) :config)))
       (if config (load config)
         (error (format "config %s not exist") config)))
@@ -201,15 +199,15 @@ list in `org-hexo-project-alist', do not prompt."
        (org-publish-expand-projects project-list)))))
 
 (defun org-hexo--publish-project (project &optional force)
-  "Publush all blogit post, if post already posted and not modified,
+  "Publush all org-hexo post, if post already posted and not modified,
 skip it.
 
-When force is t, re-publish selected blogit project."
+When force is t, re-publish selected org-hexo project."
   (let ((org-publish-project-alist project)
         (org-publish-timestamp-directory
          (file-name-as-directory org-hexo-output-directory)))
 
-    ;; when repiblish blogit project, we need to remove all already exist cache
+    ;; when repiblish org-hexo project, we need to remove all already exist cache
     ;; file store in `org-hexo-cache-filelist'
     (when force
       ;; clear cache file
@@ -284,13 +282,13 @@ When force is t, re-publish selected blogit project."
 
 ;;;###autoload
 (defun org-hexo-publish (&optional force)
-  "Published modified blogit files."
+  "Published modified org-hexo files."
   (interactive)
   (org-hexo--select-project 'org-hexo--publish-project))
 
 ;;;###autoload
 (defun oeg-hexo-republish (&optional force)
-  "Re-publish all blogit files."
+  "Re-publish all org-hexo files."
   (interactive)
   (noflet ((org-hexo--republish-project
             (project-list)
@@ -303,9 +301,6 @@ When force is t, re-publish selected blogit project."
   (interactive)
   ;; Check if current post is belong to org-hexo.
   )
-
-;;;; TODO: remove blogit depends
-;; ref: https://github.com/RNAer/org-blog/blob/master/ox-blog.el
 
 (provide 'org-hexo)
 ;;; org-hexo.el ends here.

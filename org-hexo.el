@@ -77,7 +77,8 @@ front-matter.")
 (defvar org-hexo-permalink-format ""
   "Format use in #+PERMALINK: metadata.")
 
-(defvar org-hexo-newpost-template nil
+(defvar org-hexo-newpost-template (f-join (file-name-directory
+                                           (or load-file-name (buffer-file-name))) "templates" "newpost.org")
   "The template file for create hexo newpost.")
 
 
@@ -161,7 +162,8 @@ If parsing failed, use regexp to get the options, else return nil.
    org-hexo-overwrite-updated nil
    org-hexo-date-format "%Y-%02m-%02d %02H:%02M:%02S"
    org-hexo-permalink-format ""
-   org-hexo-newpost-template nil
+   org-hexo-newpost-template (f-join (file-name-directory
+                                      (or load-file-name (buffer-file-name))) "templates" "newpost.org")
    ;; Internal Variables
    org-hexo-cache-filelist nil))
 

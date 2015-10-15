@@ -243,11 +243,14 @@ a communication channel."
         "updated"
         (or (org-hexo--parse-date info :updated) date)))
 
+     (org-hexo---build-front-matter "layout" (plist-get info :layout))
      (org-hexo---build-front-matter "lang" (plist-get info :language))
      (org-hexo---build-front-matter "description" (plist-get info :description))
      (org-hexo---build-front-matter "keywords" (plist-get info :keywords))
      (org-hexo---build-front-matter "permalink" (plist-get info :permalink))
-     (org-hexo---build-front-matter "feed"  (plist-get info :hexo-feed))
+     (org-hexo---build-front-matter "feed"  (if (plist-get info :hexo-feed)
+                                                "true" "false"))
+
 
      ;; NOTE: value: draft, published
      ;; FIXME: finish this function

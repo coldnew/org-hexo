@@ -1,0 +1,11 @@
+#+TITLE: {{{TITLE}}}
+#+AUTHOR: {{{AUTHOR}}}
+#+EMAIL:  {{{EMAIL}}}
+#+DATE:   {{{DATE}}}
+#+LANGUAGE: {{{LANGUAGE}}}
+#+URL:      {{{URL}}}.html
+#+SAVE_AS:  {{{URL}}}.html
+#+PERMALINK:  {{{URL}}}
+#+OPTIONS: num:nil ^:nil feed:nil
+#+TAGS:
+#+CATEGORY:

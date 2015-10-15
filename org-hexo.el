@@ -30,6 +30,10 @@
 
 (eval-when-compile (require 'cl-lib))
 
+(require 'f)
+(require 'ht)
+(require 'mustache)
+
 
 ;;;; Group
 
@@ -232,6 +236,90 @@ When force is t, re-publish selected org-hexo project."
       ;; publish all current project
       (org-publish-all force))))
 
+(defun org-hexo--format-to-s-format (text)
+  "Unelegant way to convert blogit file fotmat to s-format."
+  (let ((format-alist
+         '(("%y" "${year}")
+           ("%m" "${month}")
+           ("%d" "${day}")
+           ("%S" "${filename}")
+           ("%s" "${sanitize}"))))
+    (dolist (pair protect-char-alist text)
+      (setq text (replace-regexp-in-string (car pair) (cdr pair) text t t)))))
+
+(defun org-hexo--sanitize-string (s &optional length)
+  "Sanitize string S by:
+- converting all charcters to pure ASCII
+- replacing non alphanumerical by the first three char of sha1 algorithm
+- downcasing all letters
+- trimming leading and tailing \"_\"
+This function is used to generate blog post url if not specified."
+  (if length (s-left length (org-hexo--sanitize-string s))
+    (loop for c across s
+          with cd
+          with gc
+          with ret
+          do (progn
+               (setf gc (get-char-code-property c 'general-category))
+               (setf cd (get-char-code-property c 'decomposition)))
+          if (or (member gc '(Lu Ll Nd)) (= ?_ c) (= ?- c))
+          collect (downcase
+                   (char-to-string (if cd (car cd)  c)))
+          into ret
+          else if (member gc '(Zs))
+          collect "_" into ret
+          else if (member gc '(Lo))
+          collect (s-left 3 (sha1 (char-to-string (if cd (car cd) c))))
+          into ret
+          finally return (replace-regexp-in-string
+                          "--+" "_"
+                          (replace-regexp-in-string
+                           "^_+\\|_+$" ""
+                           (mapconcat 'identity ret ""))))))
+
+
+
+(defmacro org-hexo--build-context (info &rest pairs)
+  "Create a hash table with the key-value pairs given.
+Keys are compared with `equal'.
+\(fn (KEY-1 VALUE-1) (KEY-2 VALUE-2) ...)
+This function is used to create context for blogit-render function,
+many useful context is predefined here, but you can overwrite it.
+"
+  `(ht
+    ("TITLE"   "Untitled")
+    ("AUTHOR" (or user-full-name "Unknown"))
+    ("EMAIL" (or user-mail-address ""))
+    ("DATE" (format-time-string oeg-hexo-date-format))
+    ,@pairs))
+
+
+(defun org-hexo--template-to-string (file)
+  "Read the content of FILE in template dir and return it as string."
+  (with-temp-buffer
+    (insert-file-contents file) (buffer-string)))
+
+(defun org-hexo--render-template (context)
+  "Read the file contents, then render it with a hashtable context."
+  (let ((file org-hexo-newpost-template))
+    (mustache-render (org-hexo--template-to-string file) context)))
+
+(defun org-hexo--insert-newpost-template (&optional filename)
+  "Insert blogit newpost template."
+  (save-excursion
+    (widen)
+    (goto-char (point-min))
+    (insert
+     (org-hexo--render-template
+      (org-hexo--build-context
+       nil
+       ("TITLE" (s-replace ".org" "" (or filename (buffer-file-name) "")))
+       ("DATE" (format-time-string org-hexo-date-format))
+       ;;("URL" (org-hexo--sanitize-string filename (blogit-project-info :blogit-sanitize-length)))
+       ))))
+  (end-of-buffer)
+  (newline-and-indent))
+
 
 ;;;; Load all hexo exporter functions
 ;;
@@ -268,7 +356,6 @@ When force is t, re-publish selected org-hexo project."
   (org-hexo--set-option :updated
                         (format-time-string org-hexo-date-format)))
 
-;; FIXME:
 ;;;###autoload
 (defun org-hexo-new-post ()
   "Update #+DATE: tag with current date info."
@@ -279,7 +366,7 @@ When force is t, re-publish selected org-hexo project."
 (defun org-hexo-insert-template (&optional filename)
   "Insert org-hexo newpost template."
   (interactive)
-  )
+  (org-hexo--select-project 'org-hexo--insert-template))
 
 
 ;;;###autoload
@@ -297,12 +384,13 @@ When force is t, re-publish selected org-hexo project."
             (--publish-project project-list t)))
     (org-hexo--select-project 'org-hexo--republish-project)))
 
-;;;###autoload
-(defun org-hexo-publish-current-post (&optional force)
-  "Published current post."
-  (interactive)
-  ;; Check if current post is belong to org-hexo.
-  )
+;;; TODO:
+;; ;;;###autoload
+;; (defun org-hexo-publish-current-post (&optional force)
+;;   "Published current post."
+;;   (interactive)
+;;   ;; Check if current post is belong to org-hexo.
+;;   )
 
 (provide 'org-hexo)
 ;;; org-hexo.el ends here.

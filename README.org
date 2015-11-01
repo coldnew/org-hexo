@@ -7,6 +7,12 @@ this for my personal's [[http://coldnew.github.io][blog]].
 This project is under development
 #+END_QUOTE
 
+* *TODO*
+
+  Add full workable examples.
+  
+  Currently I use [[https://github.com/coldnew/emacs-blogit][emacs-blogit]] to export the org file to =source/_posts= dir. It's time to integrate all to org-hexo.
+
 * Backend
 
 org-hexo support following backend, which help you convert org-mode article to another type file
@@ -22,5 +28,5 @@ org-hexo support following backend, which help you convert org-mode article to a
 * OPTIONS
 
 #+BEGIN_SRC org
-  ,#+OPTIONS: htmlize:nil feed:nil
+  ,#+OPTIONS:  feed:nil
 #+END_SRC

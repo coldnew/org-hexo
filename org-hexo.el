@@ -356,17 +356,17 @@ many useful context is predefined here, but you can overwrite it.
   (org-hexo--set-option :updated
                         (format-time-string org-hexo-date-format)))
 
-;;;###autoload
-(defun org-hexo-new-post ()
-  "Update #+DATE: tag with current date info."
-  (interactive)
-  )
+;; ;;;###autoload
+;; (defun org-hexo-new-post ()
+;;   "Update #+DATE: tag with current date info."
+;;   (interactive)
+;;   )
 
-;;;###autoload
-(defun org-hexo-insert-template (&optional filename)
-  "Insert org-hexo newpost template."
-  (interactive)
-  (org-hexo--select-project 'org-hexo--insert-template))
+;; ;;;###autoload
+;; (defun org-hexo-insert-template (&optional filename)
+;;   "Insert org-hexo newpost template."
+;;   (interactive)
+;;   (org-hexo--select-project 'org-hexo--insert-template))
 
 
 ;;;###autoload

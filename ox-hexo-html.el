@@ -88,9 +88,13 @@ INFO is a plist holding contextual information.  See
 In this function, we also add link file"
   (let ((org-html-link-org-files-as-html nil)
         (html-link (org-hexo--link 'org-html-link link desc info)))
-    ;; NOTE: remove alt
+    ;; FIXME:
+    ;; Remove alt in image
+    ;;        class in link
     (replace-regexp-in-string
-     "<img src=\"\\(.*?\\)\"\s+alt=\"\\(.*?\\)\"\\(.*?\\)" "<img src=\"\\1\" \\3" html-link)))
+     "<a href=\"\\(.*?\\)\"\s+class=\"\\(.*?\\)\"\\(.*?\\)" "<a href=\"\\1\" \\3"
+     (replace-regexp-in-string
+      "<img src=\"\\(.*?\\)\"\s+alt=\"\\(.*?\\)\"\\(.*?\\)" "<img src=\"\\1\" \\3" html-link))))
 
 
 ;;; Template

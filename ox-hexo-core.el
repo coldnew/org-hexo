@@ -82,6 +82,7 @@
     (dolist (pair protect-char-alist text)
       (setq text (replace-regexp-in-string (car pair) (cdr pair) text t t)))))
 
+;; http://www.obkb.com/dcljr/charstxt.html
 (defun org-hexo--protect-title (text)
   "Convert:
     :    ->  &#58;

@@ -82,6 +82,17 @@
     (dolist (pair protect-char-alist text)
       (setq text (replace-regexp-in-string (car pair) (cdr pair) text t t)))))
 
+(defun org-hexo--protect-title (text)
+  "Convert:
+    :    ->  &#58;
+"
+  (let ((protect-char-alist
+         '((":" . "&#58;")
+           )))
+    (dolist (pair protect-char-alist text)
+      (setq text (replace-regexp-in-string (car pair) (cdr pair) text t t)))))
+
+
 (defun org-hexo--protect-string (str)
   "Convert \" -> &quot;"
   (replace-regexp-in-string
@@ -211,6 +222,11 @@ a communication channel."
                    (cons 'plain-text org-element-all-objects)
                  'identity info))))))
 
+(defun org-hexo---build-title (name var)
+  (and (org-string-nw-p var)
+       (format "%s: %s\n" name
+               (org-hexo--protect-title (org-hexo--protect-string var)))))
+
 (defun org-hexo---build-front-matter (name var)
   (and (org-string-nw-p var)
        (format "%s: %s\n" name (org-hexo--protect-string var))))
@@ -232,7 +248,8 @@ a communication channel."
     (concat
      "---\n"
      ;; user info
-     (org-hexo---build-front-matter "title" (org-hexo--parse-title info))
+     (org-hexo---build-title "title" (org-hexo--parse-title info))
+
      (org-hexo---build-front-matter "author" (org-hexo--parse-author info))
 
      ;; date

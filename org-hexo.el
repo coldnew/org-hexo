@@ -376,12 +376,12 @@ many useful context is predefined here, but you can overwrite it.
   (org-hexo--select-project 'org-hexo--publish-project))
 
 ;;;###autoload
-(defun oeg-hexo-republish (&optional force)
+(defun org-hexo-republish (&optional force)
   "Re-publish all org-hexo files."
   (interactive)
   (noflet ((org-hexo--republish-project
             (project-list)
-            (--publish-project project-list t)))
+            (org-hexo--publish-project project-list t)))
     (org-hexo--select-project 'org-hexo--republish-project)))
 
 ;;; TODO:

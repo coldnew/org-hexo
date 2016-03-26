@@ -277,9 +277,7 @@ a communication channel."
      ;; compact version
      (org-hexo---build-front-matter* "category" category)
      (org-hexo---build-front-matter* "tags" tags)
-     "---\n"
-     ;; Add generator comments
-     "<!-- This file is generate by org-hexo, DO NOT EDIT manually -->\n")))
+     "---\n")))
 
 (provide 'ox-hexo-core)
 ;;; ox-hexo-core.el ends here.

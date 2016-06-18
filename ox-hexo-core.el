@@ -192,19 +192,21 @@ a communication channel."
 
 
 ;;;; Metadata
-
 (defun org-hexo--parse-date (info key)
   "Parse #+DATE: value."
-  (let ((date (plist-get info key)))
+  (let ((date (if (eq key :with-date)
+                  (org-export-data (and (plist-get info :with-date) (org-export-get-date info)) info)
+                  (plist-get info key))))
+
     (and (org-string-nw-p date)
          (if (stringp date)
              ;; raw date info: 2013-08-04 23:28:44
              ;; FIXME: does this also work for `2013/08/04 23:28:44' ?
              date
-           ;; parse org-timestamp
-           (format-time-string "%Y-%m-%d %H:%M:%S"
-                               (apply 'encode-time (org-parse-time-string
-                                                    (org-element-property :raw-value date))))))))
+             ;; parse org-timestamp
+             (format-time-string "%Y-%m-%d %H:%M:%S"
+                                 (apply 'encode-time (org-parse-time-string
+                                                      (org-element-property :raw-value date))))))))
 
 (defun org-hexo--parse-title (info)
   "Parse #+TITLE: value."
@@ -241,7 +243,7 @@ a communication channel."
                 (if (s-equals-p name "tags") " ]" "")))))
 
 (defun org-hexo--build-front-matter (info)
-  (let* ((date (org-hexo--parse-date info :date))
+  (let* ((date (org-hexo--parse-date info :with-date))
          (updated (or (org-hexo--parse-date info :updated) date))
          (category (plist-get info :category))
          (tags (plist-get info :tags))

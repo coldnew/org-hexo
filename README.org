@@ -1,10 +1,18 @@
 #+TITLE: org-hexo -- org-mode exporter for Hexo
 
+*THIS PROJECT IS DEAD*:
+
+I am porting this to my fork of [[https://github.com/coldnew/hexo-renderer-org][hexo-renderer-org]], which now can use emacs to htmlize the code block.
+
+Since [[https://github.com/coldnew/hexo-renderer-org][hexo-renderer-org]] is more easy to use instead of org-hexo, I'll working on my fork instead of mantain this project.
+
+---
+
 org-hexo is an org-mode exporter for [[https://hexo.io/zh-tw/][hexo]] static site generator. I write
 this for my personal's [[http://coldnew.github.io][blog]].
 
 #+BEGIN_QUOTE
-This project is under development, but it's workable now.
+This project is *DEAD*, but it's workable now.
 #+END_QUOTE
 
 *Since this project is written for myself, there's no schedule to a workable release, if you intrested in this project, please add ISSUE to make me work more quickly*

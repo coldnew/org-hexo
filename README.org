@@ -6,6 +6,8 @@ I am porting this to my fork of [[https://github.com/coldnew/hexo-renderer-org][
 
 Since [[https://github.com/coldnew/hexo-renderer-org][hexo-renderer-org]] is more easy to use instead of org-hexo, I'll working on my fork instead of mantain this project.
 
+You can see [[https://coldnew.github.io/hexo-org-example/2017/03/05/getting-started-with-hexo-and-org-mode/][Getting Started with the Hexo and org-mode]] to know how to use [[https://github.com/coldnew/hexo-renderer-org][coldnew/hexo-renderer-org]].
+
 ---
 
 org-hexo is an org-mode exporter for [[https://hexo.io/zh-tw/][hexo]] static site generator. I write

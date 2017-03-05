@@ -1,4 +1,4 @@
-#+TITLE: org-hexo -- org-mode exporter for Hexo
+#+TITLE: [DEAD] org-hexo -- org-mode exporter for Hexo
 
 *THIS PROJECT IS DEAD*:
 
@@ -10,7 +10,7 @@ You can see [[https://coldnew.github.io/hexo-org-example/2017/03/05/getting-star
 
 *這個專案死翹翹囉*:
 
-沒有為什麼，以前我都是用類似 =org-publish-prject= 的方式來產生 HTML 檔案讓 hexo 去進行渲染，不過隨著 org-mode 文件越來越多，整個發布流程就會慢的讓人無法接受，所以這個專案 *該死* 。
+沒有為什麼，以前我都是用類似 =org-publish-project= 的方式來產生 HTML 檔案讓 hexo 去進行渲染，不過隨著 org-mode 文件越來越多，整個發布流程就會慢的讓人無法接受，所以這個專案 *該死* 。
 
 取而代之的，我 fork [[https://github.com/CodeFalling/hexo-renderer-org][CodeFalling/hexo-renderer-org]] 這個專案到 [[https://github.com/coldnew/hexo-renderer-org][coldnew/hexo-renderer-org]], 和原始版本的不同之處在於我的 fork 是用 emacs 自己去進行代碼上色，並且盡可能遵守 org-mode way。
 
